@@ -1,0 +1,25 @@
+#!/bin/bash
+
+domains=("${@:-localhost}")
+
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     machine=Linux;;
+    Darwin*)    machine=Mac;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
+
+if [ "$machine" == "Max" ]; then
+  brew install mkcert
+  brew install nss # if you use Firefox
+fi
+
+if [ "$machine" == "Linux" ]; then
+  sudo apt install libnss3-tools # Change it according to Linux distribution
+  git clone https://github.com/FiloSottile/mkcert
+  ( cd mkcert && go build -ldflags "-X main.Version=$(git describe --tags)" )
+fi
+
+./mkcert/mkcert -install
+./mkcert/mkcert -key-file key.pem -cert-file cert.pem "${domains[@]}"
+
