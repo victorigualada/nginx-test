@@ -22,4 +22,5 @@ fi
 
 ./mkcert/mkcert -install
 ./mkcert/mkcert -key-file key.pem -cert-file cert.pem "${domains[@]}"
+openssl rand 48 > ticket.key
 
